@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_D8B23C52-DF8D-467F-B740-AB21B211326D" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_5D52D383-61FB-4B74-BB7F-858339DAD630" name="jve-Weather-Advice" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_D8B23C52-DF8D-467F-B740-AB21B211326D">
   <dmn:extensionElements/>
+  <dmn:itemDefinition id="_3338CE04-8513-49D8-AF02-C12E019260C6" name="temperature" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="expression" id="_B3B4B56C-6C0F-4B24-AAB1-B42CDC878C9E">
+      <dmn:text>"cold",
+"warm",
+"hot"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_B114CF3A-712B-44D4-A79B-509F64641FB7" name="weather" isCollection="false">
+    <dmn:itemComponent id="_E1634D64-1557-4531-8DF9-CBF9DE40EDC0" name="rainForecast" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_00826A6C-48E1-4735-858C-13223363CAFD" name="temperature" isCollection="false">
+      <dmn:typeRef>temperature</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
   <dmn:inputData id="_AFA8FC41-CCB8-4757-ADA8-D893011CC426" name="Name">
     <dmn:extensionElements/>
     <dmn:variable id="_83151CCF-640E-40AC-A868-E3A8233C9AE9" name="Name" typeRef="string"/>
@@ -15,12 +31,12 @@
       <dmn:requiredDecision href="#_76222A80-87D3-4383-97D0-A79D47788A43"/>
     </dmn:informationRequirement>
     <dmn:literalExpression id="_D774D6D5-E8AE-49B7-85C7-0534CCF3EBBD">
-      <dmn:text>if Name = "" then "Sorry, we don't have enough information to provide a response." else "Hello "+Name+"! "</dmn:text>
+      <dmn:text>if Name = "" then "Sorry, we don't have enough information to provide a response." else "Hello "+Name+"! "+Weather-Advice</dmn:text>
     </dmn:literalExpression>
   </dmn:decision>
-  <dmn:inputData id="_654417D8-A552-4B56-BD96-D13AFD0ABB38" name="Rain-Forecast">
+  <dmn:inputData id="_654417D8-A552-4B56-BD96-D13AFD0ABB38" name="Weather">
     <dmn:extensionElements/>
-    <dmn:variable id="_13377E88-BEAE-4310-913F-68ADFF5906B5" name="Rain-Forecast" typeRef="number"/>
+    <dmn:variable id="_13377E88-BEAE-4310-913F-68ADFF5906B5" name="Weather" typeRef="weather"/>
   </dmn:inputData>
   <dmn:decision id="_76222A80-87D3-4383-97D0-A79D47788A43" name="Weather-Advice">
     <dmn:extensionElements/>
@@ -31,7 +47,12 @@
     <dmn:decisionTable id="_ADFAA6DF-15BD-4FA5-BD59-3BD46E74D3A1" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
       <dmn:input id="_58483C35-17EE-4D5F-B0C9-AE53C66BC3F6">
         <dmn:inputExpression id="_ADEBA929-2C1E-4C5A-9112-66D45911AF31" typeRef="number">
-          <dmn:text>Rain-Forecast</dmn:text>
+          <dmn:text>Weather.rainForecast</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input id="_6F96570A-0A29-4631-B8DC-AF9720860BF0">
+        <dmn:inputExpression id="_8DE777A1-7DDB-4C45-AE8E-F5E624E39D2F" typeRef="temperature">
+          <dmn:text>Weather.temperature</dmn:text>
         </dmn:inputExpression>
       </dmn:input>
       <dmn:output id="_F32C9B96-B6C9-46D3-BFD4-6D58C7AAA3FF"/>
@@ -40,8 +61,11 @@
         <dmn:inputEntry id="_032DD394-E389-4CFF-944F-6EC1B9E57D53">
           <dmn:text>[0..20)</dmn:text>
         </dmn:inputEntry>
+        <dmn:inputEntry id="_E0EB092D-0305-40BB-8F7E-8C73C30A6F66">
+          <dmn:text>"cold"</dmn:text>
+        </dmn:inputEntry>
         <dmn:outputEntry id="_7CBAB003-C005-45AF-907F-346FA97D96AF">
-          <dmn:text>"Nice day. Enjoy the weather."</dmn:text>
+          <dmn:text>"Cold day. Take a coat."</dmn:text>
         </dmn:outputEntry>
         <dmn:annotationEntry>
           <dmn:text/>
@@ -50,6 +74,9 @@
       <dmn:rule id="_512FFAD8-D156-4443-A24A-26F8E0C14CF0">
         <dmn:inputEntry id="_9D69F197-6B80-44DC-B632-19C6C4F8432D">
           <dmn:text>[20..80)</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_0F570B5E-87D1-4927-AF44-E415FE8F9B6D">
+          <dmn:text>-</dmn:text>
         </dmn:inputEntry>
         <dmn:outputEntry id="_A6F17ECC-7DBC-47BD-A93A-0599EDCA7694">
           <dmn:text>"Risk of rain. Might need your umbrella !"</dmn:text>
@@ -61,6 +88,9 @@
       <dmn:rule id="_8EF4EE58-9E18-4F74-8EC4-1A0BEF13990F">
         <dmn:inputEntry id="_35214DDA-715F-4EA7-8146-079EDA8C662F">
           <dmn:text>[80..100]</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_F551B760-30B5-45B2-855A-5E0761B78E00">
+          <dmn:text>-</dmn:text>
         </dmn:inputEntry>
         <dmn:outputEntry id="_611C1E68-98FE-4151-B007-3BC28ACF21B8">
           <dmn:text>"Rainy day.  Take your umbrella !"</dmn:text>
@@ -81,6 +111,7 @@
           <kie:ComponentWidths dmnElementRef="_ADFAA6DF-15BD-4FA5-BD59-3BD46E74D3A1">
             <kie:width>50</kie:width>
             <kie:width>182</kie:width>
+            <kie:width>225</kie:width>
             <kie:width>344</kie:width>
             <kie:width>100</kie:width>
           </kie:ComponentWidths>
